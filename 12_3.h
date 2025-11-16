@@ -1,10 +1,12 @@
 #define SIZE 4
 
-// Àü¿ª º¯¼ö ¼±¾ğ
+// ì „ì—­ ë³€ìˆ˜ ì„ ì–¸
 extern int board[SIZE][SIZE];
-extern int score;
 
-// ÇÔ¼ö ¼±¾ğºÎ
-void init_board();         // º¸µå ÃÊ±âÈ­
-void print_board();        // º¸µå Ãâ·Â
-void add_random_tile();    // ·£´ı Å¸ÀÏ »ı¼º
+// í•¨ìˆ˜ ì„ ì–¸
+void init_board();          // ë³´ë“œ ì´ˆê¸°í™”
+void print_board();         // ë³´ë“œ ì¶œë ¥
+void move_left();           // ì™¼ìª½ ì´ë™
+void move_right();          // ì˜¤ë¥¸ìª½ ì´ë™
+void move_up();             // ìœ„ ì´ë™
+void move_down();           // ì•„ë˜ ì´ë™
