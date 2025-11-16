@@ -1,52 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include "12_3.h"
 
-// Àü¿ª º¯¼ö Á¤ÀÇ
 int board[SIZE][SIZE];
-int score = 0;
 
-// ºó Ä­¿¡ ·£´ýÇÏ°Ô 2 ¶Ç´Â 4 »ý¼º
-void add_random_tile() {
-    int empty_cells[SIZE * SIZE][2];
-    int count = 0;
-
-    // ºó Ä­ Ã£±â
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            if (board[i][j] == 0) {
-                empty_cells[count][0] = i;
-                empty_cells[count][1] = j;
-                count++;
-            }
-        }
-    }
-
-    // ºó Ä­ÀÌ ÀÖ´Ù¸é ·£´ýÇÑ À§Ä¡¿¡ 2 ¶Ç´Â 4 »ý¼º
-    if (count > 0) {
-        int r = rand() % count;
-        int value = (rand() % 10 == 0) ? 4 : 2; // 10% È®·ü·Î 4
-        int x = empty_cells[r][0];
-        int y = empty_cells[r][1];
-        board[x][y] = value;
-    }
-}
-
-// º¸µå ÃÊ±âÈ­
+// ë³´ë“œ ì´ˆê¸°í™”
 void init_board() {
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
             board[i][j] = 0;
 
-    add_random_tile();
-    add_random_tile();
+    // í…ŒìŠ¤íŠ¸ìš© ì´ˆê¸° ë°°ì¹˜
+    board[0][0] = 2;
+    board[0][1] = 2;
+    board[1][0] = 4;
+    board[1][1] = 4;
 }
 
-// ÄÜ¼Ö¿¡ º¸µå Ãâ·Â
+// ë³´ë“œ ì¶œë ¥
 void print_board() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+
+    printf("---- 2048 (WASD version) ----\n\n");
     for (int i = 0; i < SIZE; i++) {
-        printf("----------------------------- \n");
+        printf("+------+------+------+------+ \n");
         for (int j = 0; j < SIZE; j++) {
             if (board[i][j] == 0)
                 printf("|      ");
@@ -55,5 +36,142 @@ void print_board() {
         }
         printf("|\n");
     }
-    printf("----------------------------- \n");
+    printf("+------+------+------+------+ \n");
+}
+
+/* -------------------------------
+   ì™¼ìª½ ì´ë™ (í•µì‹¬ ë¡œì§)
+-------------------------------- */
+void move_left() {
+    for (int i = 0; i < SIZE; i++) {
+        int temp[SIZE] = { 0 };
+        int idx = 0;
+
+        // 0 ì œê±°í•˜ê³  ì™¼ìª½ìœ¼ë¡œ ì••ì¶•
+        for (int j = 0; j < SIZE; j++) {
+            if (board[i][j] != 0)
+                temp[idx++] = board[i][j];
+        }
+
+        // ê°™ì€ ìˆ«ìž í•©ì¹˜ê¸°
+        for (int j = 0; j < SIZE - 1; j++) {
+            if (temp[j] != 0 && temp[j] == temp[j + 1]) {
+                temp[j] *= 2;
+                temp[j + 1] = 0;
+                j++; // í•œ ë²ˆ í•©ì¹œ íƒ€ì¼ì€ ê±´ë„ˆë›°ê¸°
+            }
+        }
+
+        // ë‹¤ì‹œ ì••ì¶•
+        int result[SIZE] = { 0 };
+        idx = 0;
+        for (int j = 0; j < SIZE; j++)
+            if (temp[j] != 0)
+                result[idx++] = temp[j];
+
+        // ë³´ë“œì— ì ìš©
+        for (int j = 0; j < SIZE; j++)
+            board[i][j] = result[j];
+    }
+}
+
+/* ì˜¤ë¥¸ìª½ ì´ë™ */
+void move_right() {
+    for (int i = 0; i < SIZE; i++) {
+        int temp[SIZE] = { 0 };
+        int idx = 0;
+
+        // 0 ì œê±°í•˜ê³  ì˜¤ë¥¸ìª½ìœ¼ë¡œ ì••ì¶•
+        for (int j = SIZE - 1; j >= 0; j--) {
+            if (board[i][j] != 0)
+                temp[idx++] = board[i][j];
+        }
+
+        // í•©ì¹˜ê¸°
+        for (int j = 0; j < SIZE - 1; j++) {
+            if (temp[j] != 0 && temp[j] == temp[j + 1]) {
+                temp[j] *= 2;
+                temp[j + 1] = 0;
+                j++;
+            }
+        }
+
+        // ë‹¤ì‹œ ì••ì¶•
+        int result[SIZE] = { 0 };
+        idx = 0;
+        for (int j = 0; j < SIZE; j++)
+            if (temp[j] != 0)
+                result[idx++] = temp[j];
+
+        // ë³´ë“œ ì˜¤ë¥¸ìª½ì— ë°˜ì˜
+        for (int j = 0; j < SIZE; j++)
+            board[i][j] = 0;
+
+        for (int j = 0; j < idx; j++)
+            board[i][SIZE - 1 - j] = result[j];
+    }
+}
+
+/* ìœ„ë¡œ ì´ë™ */
+void move_up() {
+    for (int j = 0; j < SIZE; j++) {
+        int temp[SIZE] = { 0 };
+        int idx = 0;
+
+        for (int i = 0; i < SIZE; i++) {
+            if (board[i][j] != 0)
+                temp[idx++] = board[i][j];
+        }
+
+        for (int i = 0; i < SIZE - 1; i++) {
+            if (temp[i] != 0 && temp[i] == temp[i + 1]) {
+                temp[i] *= 2;
+                temp[i + 1] = 0;
+                i++;
+            }
+        }
+
+        int result[SIZE] = { 0 };
+        idx = 0;
+        for (int i = 0; i < SIZE; i++)
+            if (temp[i] != 0)
+                result[idx++] = temp[i];
+
+        for (int i = 0; i < SIZE; i++)
+            board[i][j] = result[i];
+    }
+}
+
+/* ì•„ëž˜ë¡œ ì´ë™ */
+void move_down() {
+    for (int j = 0; j < SIZE; j++) {
+        int temp[SIZE] = { 0 };
+        int idx = 0;
+
+        for (int i = SIZE - 1; i >= 0; i--) {
+            if (board[i][j] != 0)
+                temp[idx++] = board[i][j];
+        }
+
+        for (int i = 0; i < SIZE - 1; i++) {
+            if (temp[i] != 0 && temp[i] == temp[i + 1]) {
+                temp[i] *= 2;
+                temp[i + 1] = 0;
+                i++;
+            }
+        }
+
+        int result[SIZE] = { 0 };
+        idx = 0;
+        for (int i = 0; i < SIZE; i++)
+            if (temp[i] != 0)
+                result[idx++] = temp[i];
+
+        // ë³´ë“œì— ì•„ëž˜ìª½ìœ¼ë¡œ ì ìš©
+        for (int i = 0; i < SIZE; i++)
+            board[i][j] = 0;
+
+        for (int i = 0; i < idx; i++)
+            board[SIZE - 1 - i][j] = result[i];
+    }
 }
