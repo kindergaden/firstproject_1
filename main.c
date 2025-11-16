@@ -1,16 +1,43 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include "12_3.h"  // ÇÔ¼ö ¼±¾ğ Æ÷ÇÔ
+#include "12_3.h"
 
 int main() {
-    srand((unsigned int)time(NULL));  // ·£´ı ½Ãµå ÃÊ±âÈ­
+    init_board();
 
-    init_board();    // º¸µå ÃÊ±âÈ­
-    print_board();   // ÃÊ±â º¸µå Ãâ·Â
+    while (1) {
+        print_board();
 
-    printf("\nº¸µå°¡ Á¤»óÀûÀ¸·Î ÃÊ±âÈ­µÇ¾ú½À´Ï´Ù!\n");
-    printf("¾Æ¹« Å°³ª ´©¸£¸é Á¾·áµË´Ï´Ù.\n");
-    getchar();  // ÄÜ¼Ö Á¾·á ¹æÁö¿ë
+        printf("\nW: Up, A: Left, S: Down, D: Right, Q: Quit\n");
+        printf("ì…ë ¥ > ");
+
+        char cmd;
+        scanf(" %c", &cmd);
+
+        if (cmd == 'q' || cmd == 'Q')
+            break;
+
+        switch (cmd) {
+        case 'a': case 'A':
+            move_left();
+            break;
+
+        case 'd': case 'D':
+            move_right();
+            break;
+
+        case 'w': case 'W':
+            move_up();
+            break;
+
+        case 's': case 'S':
+            move_down();
+            break;
+
+        default:
+            printf("ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤.\n");
+            break;
+        }
+    }
+
     return 0;
 }
