@@ -1,12 +1,18 @@
 #define SIZE 4
 
-// ì „ì—­ ë³€ìˆ˜ ì„ ì–¸
 extern int board[SIZE][SIZE];
 
-// í•¨ìˆ˜ ì„ ì–¸
-void init_board();          // ë³´ë“œ ì´ˆê¸°í™”
-void print_board();         // ë³´ë“œ ì¶œë ¥
-void move_left();           // ì™¼ìª½ ì´ë™
-void move_right();          // ì˜¤ë¥¸ìª½ ì´ë™
-void move_up();             // ìœ„ ì´ë™
-void move_down();           // ì•„ë˜ ì´ë™
+// ÇÔ¼ö ¼±¾ğ
+void init_board();          // º¸µå ÃÊ±âÈ­
+void print_board();         // º¸µå Ãâ·Â
+void add_random_tile();     // ºó Ä­¿¡ ·£´ı ¼ıÀÚ Ãß°¡
+
+// ÀÌµ¿ ÇÔ¼ö
+void move_left();
+void move_right();
+void move_up();
+void move_down();
+
+// °Ë»ç ÇÔ¼ö
+int is_2048();              // 2048 ´Ş¼º ¿©ºÎ Ã¼Å©
+int board_changed(int before[SIZE][SIZE]);  // ÀÌµ¿ ¿©ºÎ Ã¼Å©
